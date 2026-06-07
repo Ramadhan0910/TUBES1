@@ -20,9 +20,11 @@ func main(){
 	fmt.Println("selamat datang di aplikasi Sampahku")
 	fmt.Println("apakah ingin menggunakan aplikasi(YES/NO)")
 	fmt.Scan(&cek)
-		if cek != "YES" {
-			fmt.Println("mines literasi")
-		}else{
+		if cek != "YES" && cek != "NO" {
+			fmt.Println("\nmines literasi")
+		}else if cek == "NO" {
+			fmt.Println("\nterima kasih")
+		}else{	
 		for cek != "NO"   {
 			fmt.Println(" ")
 			fmt.Println("DAFTAR MENU")
@@ -50,8 +52,12 @@ func main(){
 			removeData(&data, &banyakW)
 		case 5:
 			selecSortSampah(&data, banyakW)
+			fmt.Println("\ndata setelah diurutkan")
+			outputData(&data, banyakW)
 		case 6:
 			insertSortSampah(&data, banyakW)
+			fmt.Println("\ndata setelah diurutkan")
+			outputData(&data, banyakW)
 		case 7:
 			hasil = seqSearchNama(data, banyakW)
 			if hasil != -1 {
@@ -82,8 +88,6 @@ func main(){
 		case 0:
 			fmt.Println("Terima kasih telah menggunakan aplikasi Sampahku!")
 			cek = "NO"
-		default:
-			fmt.Println("minus literasi cok!")
 		}
 		}
 		}	
@@ -98,7 +102,7 @@ func inputData(data *arrWarga, banyakW *int){
 	for i < NMAX && lanjut != "no" && lanjut != "NO" {
 		fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
 		fmt.Scan(&data[i].tanggal)
-		fmt.Print("Masukkan ID Warga (4 Digit): ")
+		fmt.Print("Masukkan ID Warga (5 Digit): ")
 		fmt.Scan(&data[i].id)
 		for len(data[i].id) != 5 {
 			fmt.Println("Eorr")
@@ -152,7 +156,6 @@ func selecSortSampah(data *arrWarga, banyakW int){
 		data[idx] = temp
 		pass = pass + 1
 	}
-	 outputData(data, banyakW)
 }
 
 func insertSortSampah(data *arrWarga, banyakW int){
@@ -170,7 +173,6 @@ func insertSortSampah(data *arrWarga, banyakW int){
 		data[i] = temp
 		pass = pass + 1
 	}
-	 outputData(data, banyakW)
 }
 
 func seqSearchNama(data arrWarga, banyakW int) int {
