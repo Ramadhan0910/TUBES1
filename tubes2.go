@@ -17,8 +17,8 @@ func main(){
 	var hasil int
 	
 	banyakW = 0
-	fmt.Println("selamat datang di aplikasi Sampahku")
-	fmt.Println("apakah ingin menggunakan aplikasi(YES/NO)")
+	fmt.Println("\nselamat datang di aplikasi Sampahku")
+	fmt.Println("\napakah ingin menggunakan aplikasi(YES/NO)")
 	fmt.Scan(&cek)
 		if cek != "YES" && cek != "NO" {
 			fmt.Println("\nmines literasi")
@@ -52,11 +52,11 @@ func main(){
 			removeData(&data, &banyakW)
 		case 5:
 			selecSortSampah(&data, banyakW)
-			fmt.Println("\ndata setelah diurutkan")
+			fmt.Println("\ndata setelah diurutkan berdasarkan ID(ascending)")
 			outputData(&data, banyakW)
 		case 6:
 			insertSortSampah(&data, banyakW)
-			fmt.Println("\ndata setelah diurutkan")
+			fmt.Println("\ndata setelah diurutkan berdasarkan berat(descending)")
 			outputData(&data, banyakW)
 		case 7:
 			hasil = seqSearchNama(data, banyakW)
@@ -86,7 +86,7 @@ func main(){
 			insertSortSampah(&data, banyakW)
 			statistikSampah(&data, banyakW)
 		case 0:
-			fmt.Println("Terima kasih telah menggunakan aplikasi Sampahku!")
+			fmt.Println("\nTerima kasih telah menggunakan aplikasi Sampahku!")
 			cek = "NO"
 		}
 		}
