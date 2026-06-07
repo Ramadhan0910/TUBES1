@@ -1,5 +1,6 @@
 package main
 
+//Memakai bufio, strings, dan os untuk membaca input string dengan spasi
 import (
 	"bufio"
 	"fmt"
@@ -16,6 +17,7 @@ type warga struct {
 }
 type arrWarga [NMAX]warga
 
+// Membuat scanner global untuk membaca input string
 var scanner = bufio.NewScanner(os.Stdin)
 
 func main() {
@@ -295,7 +297,7 @@ func ubahData(data *arrWarga, banyakW int) {
 
 	found = seqSearchNama(*data, banyakW)
 	if found == -1 {
-		fmt.Println("nama tidak ditemukan")
+		fmt.Println("id tidak ditemukan")
 	} else {
 		fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
 		fmt.Scan(&data[found].tanggal)
