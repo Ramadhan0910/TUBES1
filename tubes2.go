@@ -22,9 +22,9 @@ func main(){
 	fmt.Scan(&cek)
 		if cek != "YES" && cek != "NO" {
 			fmt.Println("\nmines literasi")
-		}else if cek == "NO" {
-			fmt.Println("\nterima kasih")
-		}else{	
+		}else if  cek == "NO" {
+			fmt.Println("\nTerima kasih")
+		}else{
 		for cek != "NO"   {
 			fmt.Println(" ")
 			fmt.Println("DAFTAR MENU")
@@ -67,7 +67,7 @@ func main(){
         		fmt.Println("Berat   :", data[hasil].berat, "kg")
         		fmt.Println("Jenis   :", data[hasil].jenis)
 			} else {
-				fmt.Println("Tidak ditemukan")
+				fmt.Println("\nTidak ditemukan")
 			}	
 		case 8:
 			selecSortSampah(&data, banyakW)
@@ -88,6 +88,8 @@ func main(){
 		case 0:
 			fmt.Println("\nTerima kasih telah menggunakan aplikasi Sampahku!")
 			cek = "NO"
+		default:
+			fmt.Println("minus literasi cok!")
 		}
 		}
 		}	
@@ -125,8 +127,11 @@ func inputData(data *arrWarga, banyakW *int){
 
 func outputData( data *arrWarga, banyakW int){
 	var i int
-	
-	fmt.Println("\nDaftar Warga")
+	if banyakW == 0{
+		fmt.Println("\ndata tidak ada")
+	}else{
+		fmt.Println("\nDaftar Warga")
+	}
 	 for i = 0; i < banyakW; i++ {
         fmt.Println("\nTanggal :", data[i].tanggal)
         fmt.Println("ID      :", data[i].id)
