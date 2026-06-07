@@ -58,6 +58,7 @@ func main() {
 				ubahData(&data, banyakW)
 			case 4:
 				removeData(&data, &banyakW)
+				outputData(&data, banyakW)
 			case 5:
 				selecSortSampah(&data, banyakW)
 				fmt.Println("\ndata setelah diurutkan berdasarkan ID(ascending)")
@@ -74,6 +75,7 @@ func main() {
 					fmt.Println("Nama    :", data[hasil].nama)
 					fmt.Println("Berat   :", data[hasil].berat, "kg")
 					fmt.Println("Jenis   :", data[hasil].jenis)
+					fmt.Println("Data ditemukan!")
 				} else {
 					fmt.Println("\nTidak ditemukan")
 				}
@@ -86,6 +88,7 @@ func main() {
 					fmt.Println("Nama    :", data[hasil].nama)
 					fmt.Println("Berat   :", data[hasil].berat, "kg")
 					fmt.Println("Jenis   :", data[hasil].jenis)
+					fmt.Println("Data ditemukan!")
 				} else {
 					fmt.Println("Tidak ditemukan")
 				}
@@ -103,11 +106,13 @@ func main() {
 	}
 }
 
+// Fungsi untuk membaca input string dengan spasi
 func bacaString() string {
 	scanner.Scan()
 	return strings.TrimSpace(scanner.Text())
 }
 
+//Fungsi untuk menginput data warga
 func inputData(data *arrWarga, banyakW *int) {
 	var i,j int
 	var lanjut string
@@ -164,6 +169,7 @@ func inputData(data *arrWarga, banyakW *int) {
 	*banyakW = i
 }
 
+//Fungsi untuk menampilkan data warga
 func outputData(data *arrWarga, banyakW int) {
 	var i int
 	if banyakW == 0 {
@@ -180,6 +186,7 @@ func outputData(data *arrWarga, banyakW int) {
 	}
 }
 
+//Fungsi untuk mengurutkan data warga berdasarkan ID secara ascending dengan selection sort
 func selecSortSampah(data *arrWarga, banyakW int) {
 	var pass, idx, i int
 	var temp warga
@@ -201,6 +208,7 @@ func selecSortSampah(data *arrWarga, banyakW int) {
 	}
 }
 
+//Fungsi untuk mengurutkan data warga berdasarkan berat secara descending dengan insertion sort
 func insertSortSampah(data *arrWarga, banyakW int) {
 	var pass, i int
 	var temp warga
@@ -218,12 +226,14 @@ func insertSortSampah(data *arrWarga, banyakW int) {
 	}
 }
 
+//Fungsi untuk mencari data warga berdasarkan nama dengan sequential search
 func seqSearchNama(data arrWarga, banyakW int) int {
 	var found, i int
 	var target string
 
 	fmt.Print("Target nama:")
-	fmt.Scan(&target)
+	scanner.Scan()           
+    target = bacaString()
 	found = -1
 	i = 0
 	for found == -1 && i < banyakW {
@@ -235,6 +245,7 @@ func seqSearchNama(data arrWarga, banyakW int) int {
 	return found
 }
 
+//Fungsi untuk mencari data warga berdasarkan ID dengan binary search
 func binSearchId(data arrWarga, banyakW int) int {
 	var left, right, mid, found int
 	var x string
@@ -258,8 +269,11 @@ func binSearchId(data arrWarga, banyakW int) int {
 	return found
 }
 
+//Fungsi untuk menghapus data warga berdasarkan ID
 func removeData(data *arrWarga, banyakW *int) {
 	var i, found int
+
+	selecSortSampah(data, *banyakW)
 	found = binSearchId(*data, *banyakW)
 	if found == -1 {
 		fmt.Println("\nID tidak ditemukan")
@@ -274,8 +288,9 @@ func removeData(data *arrWarga, banyakW *int) {
 	}
 }
 
+//Fungsi untuk mengubah data warga berdasarkan nama
 func ubahData(data *arrWarga, banyakW int) {
-	var found, i, j int
+	var found, j int
 	var iddouble bool
 
 	found = seqSearchNama(*data, banyakW)
@@ -284,24 +299,24 @@ func ubahData(data *arrWarga, banyakW int) {
 	} else {
 		fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
 		fmt.Scan(&data[found].tanggal)
-		for len(data[i].tanggal) != 10 || data[i].tanggal[2] != '-' || data[i].tanggal[5] != '-' {
+		for len(data[found].tanggal) != 10 || data[found].tanggal[2] != '-' || data[found].tanggal[5] != '-' {
 			fmt.Println("Eror. input kembali sesuai format (DD-MM-YYYY) ")
 			fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
-			fmt.Scan(&data[i].tanggal)
+			fmt.Scan(&data[found].tanggal)
 		}
 		iddouble = true
 		for iddouble {
 			fmt.Print("Masukkan ID Warga (5 Digit): ")
-			fmt.Scan(&data[i].id)
-			for len(data[i].id) != 5  {
+			fmt.Scan(&data[found].id)
+			for len(data[found].id) != 5  {
 				fmt.Println("Eror. input kembali sesuai format (5 digit): ")
 				fmt.Print("Masukkan ID Warga: ")
-				fmt.Scan(&data[i].id)
+				fmt.Scan(&data[found].id)
 			}
 
 			iddouble = false
-			for j = 0; j < i; j++ {
-				if data[j].id == data[i].id {
+			for j = 0; j < banyakW; j++ {
+				if j != found && data[j].id == data[found].id {
 					iddouble = true
 				}
 			}
@@ -311,25 +326,28 @@ func ubahData(data *arrWarga, banyakW int) {
 			}
 		}
 		fmt.Print("Masukkan Nama Warga: ")
-		fmt.Scan(&data[found].nama)
+		scanner.Scan()
+		data[found].nama = bacaString()
 		fmt.Print("Masukkan Berat Sampah (kg): ")
 		fmt.Scan(&data[found].berat)
 		fmt.Print("Masukkan jenis sampah(organik/anorganik) : ")
 		fmt.Scan(&data[found].jenis)
-		for data[i].jenis != "organik" && data[i].jenis != "anorganik" && data[i].jenis != "ORGANIK" && data[i].jenis != "ANORGANIK"{
+		for data[found].jenis != "organik" && data[found].jenis != "anorganik" && data[found].jenis != "ORGANIK" && data[found].jenis != "ANORGANIK"{
 		fmt.Println("data tidak valid")	
 		fmt.Println("masukan kembali jenis sampah yang sesuai")
-		fmt.Scan(&data[i].jenis)
+		fmt.Scan(&data[found].jenis)
 		}
 		fmt.Println("Data berhasil di ubah")
 	}
 }
 
+//Fungsi mencari minimum dan maksimum berat sampah berdasarkan data yang sudah diurutkan dengan insertion sort
 func minMaxSampah(data *arrWarga, banyakW int) {
 	fmt.Println("\nWarga dengan berat sampah paling banyak: ", data[0].nama, "| berat: ", data[0].berat, "Kg")
 	fmt.Println("Warga dengan berat sampah paling sedikit: ", data[banyakW-1].nama, "| berat: ", data[banyakW-1].berat, "Kg")
 }
 
+//Fungsi untuk menampilkan statistik sampah mingguan berdasarkan data yang sudah diurutkan dengan insertion sort
 func statistikSampah(data *arrWarga, banyakW int) {
 	var i int
 	var totalOr, totalAn, total float64
@@ -357,4 +375,3 @@ func statistikSampah(data *arrWarga, banyakW int) {
 	fmt.Printf("Total sampah organik       : %.2f kg\n", totalOr)
 	fmt.Printf("Total sampah anorganik     : %.2f kg\n", totalAn)
 }
-
