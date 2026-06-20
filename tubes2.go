@@ -1,12 +1,6 @@
 package main
 
-//Memakai bufio, strings, dan os untuk membaca input string dengan spasi
-import (
-	"bufio"
-	"fmt"
-	"os"
-	"strings"
-)
+import "fmt"
 
 const NMAX = 1000
 
@@ -17,8 +11,6 @@ type warga struct {
 }
 type arrWarga [NMAX]warga
 
-// Membuat scanner global untuk membaca input string
-var scanner = bufio.NewScanner(os.Stdin)
 
 func main() {
 	var data arrWarga
@@ -72,7 +64,7 @@ func main() {
 			case 7:
 				hasil = seqSearchNama(data, banyakW)
 				if hasil != -1 {
-					fmt.Println("Tanggal :", data[hasil].tanggal)
+					fmt.Println("\nTanggal :", data[hasil].tanggal)
 					fmt.Println("ID      :", data[hasil].id)
 					fmt.Println("Nama    :", data[hasil].nama)
 					fmt.Println("Berat   :", data[hasil].berat, "kg")
@@ -85,7 +77,7 @@ func main() {
 				selecSortSampah(&data, banyakW)
 				hasil = binSearchId(data, banyakW)
 				if hasil != -1 {
-					fmt.Println("Tanggal :", data[hasil].tanggal)
+					fmt.Println("\nTanggal :", data[hasil].tanggal)
 					fmt.Println("ID      :", data[hasil].id)
 					fmt.Println("Nama    :", data[hasil].nama)
 					fmt.Println("Berat   :", data[hasil].berat, "kg")
@@ -108,12 +100,20 @@ func main() {
 	}
 }
 
-// Fungsi untuk membaca input string dengan spasi
-func bacaString() string {
-	scanner.Scan()
-	return strings.TrimSpace(scanner.Text())
+func tanggalTrue(tanggal string) bool { //dd-mm-yyyy
+	var i int
+	if len(tanggal) != 10 || tanggal[2] != '-' || tanggal[5] != '-' {
+		return false
+	}
+	for i = 0; i < 10; i++ {
+		if i != 2 && i != 5 {  
+			if tanggal[i] <'0' || tanggal[i] > '9' {
+				return false
+			}
+		}
+	}
+	return true
 }
-
 //Fungsi untuk menginput data warga
 func inputData(data *arrWarga, banyakW *int) {
 	var i,j int
@@ -125,7 +125,8 @@ func inputData(data *arrWarga, banyakW *int) {
 	for i < NMAX && lanjut != "no" && lanjut != "NO" {
 		fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
 		fmt.Scan(&data[i].tanggal)
-		for len(data[i].tanggal) != 10 || data[i].tanggal[2] != '-' || data[i].tanggal[5] != '-' {
+		 
+		for !tanggalTrue(data[i].tanggal) {
 			fmt.Println("Eror. input kembali sesuai format (DD-MM-YYYY) ")
 			fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
 			fmt.Scan(&data[i].tanggal)
@@ -152,11 +153,10 @@ func inputData(data *arrWarga, banyakW *int) {
 			}
 		}
 		fmt.Print("Masukkan Nama Warga: ")
-		scanner.Scan()
-		data[i].nama = bacaString()
+		fmt.Scan(&data[i].nama)
 		fmt.Print("Masukkan Berat Sampah (kg): ")
 		fmt.Scan(&data[i].berat)
-		fmt.Print("Masukkan jenis sampah(organik/anorganik) : ")
+		fmt.Print("Masukkan jenis sampah(organik/anorganik): ")
 		fmt.Scan(&data[i].jenis)
 		for data[i].jenis != "organik" && data[i].jenis != "anorganik" && data[i].jenis != "ORGANIK" && data[i].jenis != "ANORGANIK"{
 		fmt.Println("data tidak valid")	
@@ -233,9 +233,8 @@ func seqSearchNama(data arrWarga, banyakW int) int {
 	var found, i int
 	var target string
 
-	fmt.Print("Target nama:")
-	scanner.Scan()           
-    target = bacaString()
+	fmt.Print("Target nama: ")
+	fmt.Scan(&target)
 	found = -1
 	i = 0
 	for found == -1 && i < banyakW {
@@ -328,8 +327,7 @@ func ubahData(data *arrWarga, banyakW int) {
 			}
 		}
 		fmt.Print("Masukkan Nama Warga: ")
-		scanner.Scan()
-		data[found].nama = bacaString()
+		fmt.Scan(&data[found].nama)
 		fmt.Print("Masukkan Berat Sampah (kg): ")
 		fmt.Scan(&data[found].berat)
 		fmt.Print("Masukkan jenis sampah(organik/anorganik) : ")
