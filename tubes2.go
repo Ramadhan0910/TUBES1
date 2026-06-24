@@ -5,12 +5,11 @@ import "fmt"
 const NMAX = 1000
 
 type warga struct {
-	tanggal string
+	tanggal, bulan, tahun int
 	id, nama, jenis string
-	berat  float64
+	berat float64
 }
 type arrWarga [NMAX]warga
-
 
 func main() {
 	var data arrWarga
@@ -22,7 +21,7 @@ func main() {
 	fmt.Println("\n===== Selamat Datang Diaplikasi Sampahku =====")
 	fmt.Println("\nApakah Ingin Menggunakan Aplikasi(YES/NO)")
 	fmt.Scan(&cek)
-	if (cek != "YES" && cek != "NO") &&  (cek != "yes" && cek != "no"){
+	if (cek != "YES" && cek != "NO") && (cek != "yes" && cek != "no") {
 		fmt.Println("\nmines literasi")
 	} else if cek == "NO" || cek == "no" {
 		fmt.Println("\nTerima kasih")
@@ -50,6 +49,7 @@ func main() {
 				outputData(&data, banyakW)
 			case 3:
 				ubahData(&data, banyakW)
+				outputData(&data, banyakW)
 			case 4:
 				removeData(&data, &banyakW)
 				outputData(&data, banyakW)
@@ -64,7 +64,7 @@ func main() {
 			case 7:
 				hasil = seqSearchNama(data, banyakW)
 				if hasil != -1 {
-					fmt.Println("\nTanggal :", data[hasil].tanggal)
+					fmt.Printf("Tanggal : %02d/%02d/%d\n", data[hasil].tanggal, data[hasil].bulan, data[hasil].tahun)
 					fmt.Println("ID      :", data[hasil].id)
 					fmt.Println("Nama    :", data[hasil].nama)
 					fmt.Println("Berat   :", data[hasil].berat, "kg")
@@ -77,7 +77,7 @@ func main() {
 				selecSortSampah(&data, banyakW)
 				hasil = binSearchId(data, banyakW)
 				if hasil != -1 {
-					fmt.Println("\nTanggal :", data[hasil].tanggal)
+					fmt.Printf("Tanggal : %02d/%02d/%d\n", data[hasil].tanggal, data[hasil].bulan, data[hasil].tahun)
 					fmt.Println("ID      :", data[hasil].id)
 					fmt.Println("Nama    :", data[hasil].nama)
 					fmt.Println("Berat   :", data[hasil].berat, "kg")
@@ -100,43 +100,44 @@ func main() {
 	}
 }
 
-func tanggalTrue(tanggal string) bool { //dd-mm-yyyy
-	var i int
-	if len(tanggal) != 10 || tanggal[2] != '-' || tanggal[5] != '-' {
-		return false
-	}
-	for i = 0; i < 10; i++ {
-		if i != 2 && i != 5 {  
-			if tanggal[i] <'0' || tanggal[i] > '9' {
-				return false
-			}
-		}
-	}
-	return true
-}
 //Fungsi untuk menginput data warga
 func inputData(data *arrWarga, banyakW *int) {
-	var i,j int
+	var i, j int
 	var lanjut string
 	var iddouble bool
 
 	i = *banyakW
 	lanjut = "yes"
 	for i < NMAX && lanjut != "no" && lanjut != "NO" {
-		fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
-		fmt.Scan(&data[i].tanggal)
-		 
-		for !tanggalTrue(data[i].tanggal) {
-			fmt.Println("Eror. input kembali sesuai format (DD-MM-YYYY) ")
-			fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
-			fmt.Scan(&data[i].tanggal)
-		}
+		fmt.Print("Masukkan Tanggal (1-31): ")
+        fmt.Scan(&data[i].tanggal)
+    for data[i].tanggal < 1 || data[i].tanggal > 31 {
+        fmt.Println("Error. Input kembali yang benar!")
+        fmt.Print("Masukkan Tanggal (1-31): ")
+        fmt.Scan(&data[i].tanggal)
+    }
+
+    fmt.Print("Masukkan Bulan (1-12): ")
+    fmt.Scan(&data[i].bulan)
+    for data[i].bulan < 1 || data[i].bulan > 12 {
+        fmt.Println("Error. Input kembali yang benar!")
+        fmt.Print("Masukkan Bulan (1-12): ")
+        fmt.Scan(&data[i].bulan)
+    }
+
+    fmt.Print("Masukkan Tahun: ")
+    fmt.Scan(&data[i].tahun)
+    for data[i].tahun < 0 {
+        fmt.Println("Error. Tahun tidak boleh negatif, input kembali yang benar!")
+        fmt.Print("Masukkan Tahun: ")
+        fmt.Scan(&data[i].tahun)
+    }
 		iddouble = true
 		for iddouble {
 			fmt.Print("Masukkan ID Warga (5 Digit): ")
 			fmt.Scan(&data[i].id)
-			for len(data[i].id) != 5  {
-				fmt.Println("Eror. input kembali sesuai format (5 digit): ")
+			for len(data[i].id) != 5 {
+				fmt.Println("Error. input kembali sesuai format (5 digit): ")
 				fmt.Print("Masukkan ID Warga: ")
 				fmt.Scan(&data[i].id)
 			}
@@ -149,19 +150,19 @@ func inputData(data *arrWarga, banyakW *int) {
 			}
 
 			if iddouble {
-				fmt.Println("Eror. ID sudah digunakan, Silakan masukkan ID lain.")
+				fmt.Println("Error. ID sudah digunakan, Silakan masukkan ID lain.")
 			}
 		}
-		fmt.Print("Masukkan Nama Warga: ")
+		fmt.Print("Masukkan Nama Warga(spasi gunakan '_'): ")
 		fmt.Scan(&data[i].nama)
 		fmt.Print("Masukkan Berat Sampah (kg): ")
 		fmt.Scan(&data[i].berat)
-		fmt.Print("Masukkan jenis sampah(organik/anorganik): ")
+		fmt.Print("Masukkan jenis sampah(organik/anorganik) : ")
 		fmt.Scan(&data[i].jenis)
-		for data[i].jenis != "organik" && data[i].jenis != "anorganik" && data[i].jenis != "ORGANIK" && data[i].jenis != "ANORGANIK"{
-		fmt.Println("data tidak valid")	
-		fmt.Println("masukan kembali jenis sampah yang sesuai")
-		fmt.Scan(&data[i].jenis)
+		for data[i].jenis != "organik" && data[i].jenis != "anorganik" && data[i].jenis != "ORGANIK" && data[i].jenis != "ANORGANIK" {
+			fmt.Println("data tidak valid")
+			fmt.Println("masukan kembali jenis sampah yang sesuai")
+			fmt.Scan(&data[i].jenis)
 		}
 		i = i + 1
 		fmt.Println("Data berhasil disimpan")
@@ -178,13 +179,13 @@ func outputData(data *arrWarga, banyakW int) {
 		fmt.Println("\ndata tidak ada")
 	} else {
 		fmt.Println("\nDaftar Warga")
-		fmt.Println("===========================================================================")
+		fmt.Println("---------------------------------------------------------------------------")
 		fmt.Printf("%-5s %-8s %-12s %-15s %-8s %-12s\n", "No", "ID", "Tanggal", "Nama", "Berat", "Jenis")
-		fmt.Println("===========================================================================")
+		fmt.Println("---------------------------------------------------------------------------")
 		for i = 0; i < banyakW; i++ {
-			fmt.Printf("%-5d %-8s %-12s %-15s %-8.2f %-12s\n", i+1, data[i].id,data[i].tanggal, data[i].nama, data[i].berat, data[i].jenis)
+			fmt.Printf("%-5d %-8s %02d/%02d/%-6d %-15s %-8.2f %-12s\n", i+1, data[i].id, data[i].tanggal, data[i].bulan, data[i].tahun, data[i].nama, data[i].berat, data[i].jenis)
 		}
-		fmt.Println("===========================================================================")
+		fmt.Println("---------------------------------------------------------------------------")
 	}
 }
 
@@ -233,7 +234,7 @@ func seqSearchNama(data arrWarga, banyakW int) int {
 	var found, i int
 	var target string
 
-	fmt.Print("Target nama: ")
+	fmt.Print("Target nama:")
 	fmt.Scan(&target)
 	found = -1
 	i = 0
@@ -265,7 +266,6 @@ func binSearchId(data arrWarga, banyakW int) int {
 		} else {
 			found = mid
 		}
-		mid = (right + left) / 2
 	}
 	return found
 }
@@ -280,7 +280,7 @@ func removeData(data *arrWarga, banyakW *int) {
 		fmt.Println("\nID tidak ditemukan")
 	} else {
 		i = found
-		for i <= *banyakW-2 {
+		for i < *banyakW-1 {
 			data[i] = data[i+1]
 			i = i + 1
 		}
@@ -296,20 +296,37 @@ func ubahData(data *arrWarga, banyakW int) {
 
 	found = seqSearchNama(*data, banyakW)
 	if found == -1 {
-		fmt.Println("id tidak ditemukan")
+		fmt.Println("nama tidak ditemukan")
 	} else {
-		fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
-		fmt.Scan(&data[found].tanggal)
-		for len(data[found].tanggal) != 10 || data[found].tanggal[2] != '-' || data[found].tanggal[5] != '-' {
-			fmt.Println("Eror. input kembali sesuai format (DD-MM-YYYY) ")
-			fmt.Print("Masukkan Tanggal Transaksi (DD-MM-YYYY): ")
-			fmt.Scan(&data[found].tanggal)
-		}
+		fmt.Print("Masukkan Tanggal (1-31): ")
+        fmt.Scan(&data[found].tanggal)
+    for data[found].tanggal < 1 || data[found].tanggal > 31 {
+        fmt.Println("Error. Input kembali yang benar!")
+        fmt.Print("Masukkan Tanggal (1-31): ")
+        fmt.Scan(&data[found].tanggal)
+    }
+
+    fmt.Print("Masukkan Bulan (1-12): ")
+    fmt.Scan(&data[found].bulan)
+    for data[found].bulan < 1 || data[found].bulan > 12 {
+        fmt.Println("Error. Input kembali yang benar!")
+        fmt.Print("Masukkan Bulan (1-12): ")
+        fmt.Scan(&data[found].bulan)
+    }
+
+    fmt.Print("Masukkan Tahun: ")
+    fmt.Scan(&data[found].tahun)
+    for data[found].tahun < 0 {
+        fmt.Println("Error. Tahun tidak boleh negatif, input kembali yang benar!")
+        fmt.Print("Masukkan Tahun: ")
+        fmt.Scan(&data[found].tahun)
+    }
+		
 		iddouble = true
 		for iddouble {
 			fmt.Print("Masukkan ID Warga (5 Digit): ")
 			fmt.Scan(&data[found].id)
-			for len(data[found].id) != 5  {
+			for len(data[found].id) != 5 {
 				fmt.Println("Eror. input kembali sesuai format (5 digit): ")
 				fmt.Print("Masukkan ID Warga: ")
 				fmt.Scan(&data[found].id)
@@ -332,10 +349,10 @@ func ubahData(data *arrWarga, banyakW int) {
 		fmt.Scan(&data[found].berat)
 		fmt.Print("Masukkan jenis sampah(organik/anorganik) : ")
 		fmt.Scan(&data[found].jenis)
-		for data[found].jenis != "organik" && data[found].jenis != "anorganik" && data[found].jenis != "ORGANIK" && data[found].jenis != "ANORGANIK"{
-		fmt.Println("data tidak valid")	
-		fmt.Println("masukan kembali jenis sampah yang sesuai")
-		fmt.Scan(&data[found].jenis)
+		for data[found].jenis != "organik" && data[found].jenis != "anorganik" && data[found].jenis != "ORGANIK" && data[found].jenis != "ANORGANIK" {
+			fmt.Println("data tidak valid")
+			fmt.Println("masukan kembali jenis sampah yang sesuai")
+			fmt.Scan(&data[found].jenis)
 		}
 		fmt.Println("Data berhasil di ubah")
 	}
